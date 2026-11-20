@@ -15,9 +15,17 @@ A tiny macOS menu-bar app from the NH Private Health Office. It removes blue and
 
 ## Install
 
-1. Open the downloaded DMG and drag the app to Applications.
-2. Open it. The app is not notarised, so the first time go to System Settings > Privacy & Security and click Open Anyway.
-3. Click the sun or moon in the menu bar. In Settings, click Use My Location and set your wake time and bedtime.
+**Option 1: download.** Open the DMG and drag the app to Applications, then open it.
+
+The app is not notarised by Apple, so the first time macOS says "Apple could not verify NH Red Light Block". Click **Done** (not Move to Bin), open **System Settings > Privacy & Security**, scroll down and click **Open Anyway**. You only do this once.
+
+**Option 2: one line in Terminal.** This downloads, installs and opens the app without the warning:
+
+```bash
+curl -fsSL https://nhaasmann.github.io/nh-red-light-block/install.sh | sh
+```
+
+Then click the sun or moon in the menu bar. In Settings, click Use My Location and set your wake time and bedtime.
 
 Needs macOS 14 or newer. Nothing leaves your Mac. Quitting the app restores normal colour.
 

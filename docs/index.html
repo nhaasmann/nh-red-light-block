@@ -153,9 +153,17 @@ section.get{padding:90px 0 110px;text-align:center}
 .box .lead{color:rgba(255,255,255,.7)}
 .btn.white{background:#fff;color:#1b1a18;margin-top:28px}
 .btn.white:hover{background:#f1efe9}
-.steps{display:flex;gap:10px 26px;justify-content:center;flex-wrap:wrap;margin-top:26px;font-size:13.5px;color:rgba(255,255,255,.72)}
-.steps b{color:#fff;font-weight:500}
-
+.help{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;max-width:860px;margin:38px auto 0;text-align:left}
+.way{min-width:0;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:20px 22px;backdrop-filter:blur(6px)}
+.way h3{font-size:15px;font-weight:600;color:#fff}
+.way p{font-size:13.5px;color:rgba(255,255,255,.7);margin-top:6px}
+.way ol{margin:12px 0 0;padding-left:20px;font-size:14px;color:rgba(255,255,255,.86)}
+.way li{padding:3px 0}
+.way b{color:#fff;font-weight:600}
+.cmd{display:flex;align-items:center;gap:8px;margin-top:14px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:8px 8px 8px 12px}
+.cmd code{flex:1;min-width:0;font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#ffd9a0;overflow-x:auto;white-space:nowrap}
+.cmd button{flex:none;height:30px;padding:0 12px;border-radius:7px;border:0;background:#fff;color:#1b1a18;font:500 13px var(--sans);cursor:pointer}
+.cmd button:active{transform:scale(.96)}
 footer{padding:30px 0 54px;text-align:center;color:rgba(255,255,255,.72);font-size:13.5px}
 .sig{display:block;width:min(420px,78vw);margin:0 auto -14px;transform:rotate(-4deg);filter:drop-shadow(0 2px 10px rgba(0,0,0,.35))}
 footer strong{display:block;color:#fff;font-weight:600;margin-top:0}
@@ -165,6 +173,7 @@ footer a:hover{color:#fff}
 
 @media (max-width:820px){
   .grid,.cards,.minis{grid-template-columns:1fr}
+  .help{grid-template-columns:minmax(0,1fr)}
   .studies a{grid-template-columns:92px 1fr;gap:14px}.studies svg{display:none}.studies b{font-size:32px}
   .stage{padding:16px;border-radius:20px}
   .screen{min-height:0}
@@ -287,7 +296,18 @@ footer a:hover{color:#fff}
     <h2>Sleep like the sun went down.</h2>
     <p class="lead">One download, one drag to Applications. It lives quietly in your menu bar.</p>
     <a class="btn white" data-dl href="https://github.com/nhaasmann/nh-red-light-block/releases/latest/download/NH-Red-Light-Block.dmg"><svg class="apple" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.100-1.600-2.800-1.800-3.400-1.800-1.400-.1-2.800.9-3.500.9-.7 0-1.800-.8-3-.8-1.500 0-3 .9-3.800 2.300-1.600 2.800-.4 7 1.200 9.300.8 1.100 1.700 2.400 2.900 2.300 1.200 0 1.600-.7 3-.7s1.800.7 3 .7c1.300 0 2.100-1.100 2.800-2.300.9-1.300 1.300-2.500 1.300-2.600-.100 0-2.500-1-2.500-3.800zM14.100 5.700c.6-.8 1.100-1.900 1-3-.900 0-2.100.6-2.800 1.400-.6.700-1.100 1.800-1 2.900 1 .1 2.100-.5 2.800-1.300z"/></svg>Download for Mac</a>
-    <div class="steps"><span><b>1</b> Open the download</span><span><b>2</b> Drag to Applications</span><span><b>3</b> First launch: System Settings, Privacy &amp; Security, Open Anyway</span></div>
+    <div class="help">
+      <div class="way">
+        <h3>macOS says "Apple could not verify"?</h3>
+        <p>That is normal for an app from outside the App Store. Do this once:</p>
+        <ol><li>Click <b>Done</b>, not Move to Bin.</li><li>Open <b>System Settings</b>, then <b>Privacy &amp; Security</b>.</li><li>Scroll down and click <b>Open Anyway</b>.</li></ol>
+      </div>
+      <div class="way">
+        <h3>Or skip the warning entirely</h3>
+        <p>Open Terminal, paste this line and press Return. It downloads, installs and opens the app.</p>
+        <div class="cmd"><code id="cmd">curl -fsSL https://nhaasmann.github.io/nh-red-light-block/install.sh | sh</code><button id="copy" type="button">Copy</button></div>
+      </div>
+    </div>
   </div>
 </div></section>
 
@@ -304,6 +324,7 @@ footer a:hover{color:#fff}
 (function(){const h=document.getElementById('h1');let i=0;
   (function walk(n){[...n.childNodes].forEach(c=>{if(c.nodeType===3){const f=document.createDocumentFragment();
     c.textContent.split(/(\s+)/).forEach(t=>{if(!t.trim()){f.append(t);return}const s=document.createElement('span');s.className='w';s.textContent=t;s.style.animationDelay=(i++*0.09)+'s';f.append(s)});c.replaceWith(f)}else walk(c)})})(h)})();
+document.getElementById('copy').addEventListener('click',e=>{const t=document.getElementById('cmd').textContent;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{e.target.textContent='Copied'},()=>{const g=getSelection(),n=document.createRange();n.selectNodeContents(document.getElementById('cmd'));g.removeAllRanges();g.addRange(n);e.target.textContent='Selected'});setTimeout(()=>e.target.textContent='Copy',1800)});
 addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>8),{passive:true});
 const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('in')),{threshold:.2});
 document.querySelectorAll('.card,.mini,.studies li,.founder blockquote').forEach(c=>io.observe(c));
