@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/nh-icon.png" width="72" alt="NH Private Health Office">&nbsp;&nbsp;<img src="docs/icon.png" width="72" alt="NH Red Light Block app icon"></p>
+
 # NH Red Light Block
 
 A tiny macOS menu-bar app from the NH Private Health Office. It removes blue and green light from your display at night, so your screen glows red only, and gives you your full screen back in the morning.
