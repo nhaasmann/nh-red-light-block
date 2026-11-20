@@ -1,0 +1,9 @@
+.build/
+dist/
+cook/
+.claude/
+.DS_Store
+*.zip
+/NH Red Light Block/
+Resources/AppIcon.icns
+Resources/brand/NH_Icon.svg

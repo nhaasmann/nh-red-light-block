@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NH Red Light Block: your Mac screen without the blue</title>
+<meta name="description" content="A tiny Mac app from the NH Private Health Office that removes blue and green light from your screen at night, so your body clock stays on time.">
+<meta property="og:title" content="NH Red Light Block">
+<meta property="og:description" content="Your Mac screen, without the blue. Free for macOS.">
+<meta property="og:image" content="icon.png">
+<link rel="icon" href="icon.png">
+<style>
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/inter-0.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 500; font-display: swap; src: url(fonts/inter-0.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 600; font-display: swap; src: url(fonts/inter-0.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Newsreader'; font-style: normal; font-weight: 300; font-display: swap; src: url(fonts/newsreader-0.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Newsreader'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/newsreader-0.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+:root{
+  --bg:#fbfaf8; --ink:#1b1a18; --muted:#6f6b64; --line:#e9e6e0; --card:#f3f1ec;
+  --navy:#0b1430; --navy2:#16244d; --amber:#ffb23e; --orange:#ff7a2e; --red:#ff4433;
+  --serif:"Newsreader",ui-serif,Georgia,serif; --sans:"Inter",ui-sans-serif,system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{position:relative;background:#5e0f12;color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.sky{position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,#e6effb 0%,#f1f5fa 12%,#faf7f3 30%,#fdefe6 48%,#fbd6c7 64%,#f3a48c 78%,#c9473a 89%,#7d1716 96%,#5e0f12 100%)}
+.wave{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(255,255,255,.55);border-bottom:1px solid transparent;transition:border-color .3s}
+nav.scrolled{border-color:var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px;letter-spacing:-.01em}
+.brand img{width:28px;height:28px;border-radius:7px}
+.brand span{color:var(--muted);font-weight:400}
+.navlinks{display:flex;gap:22px;align-items:center;font-size:14px;color:var(--muted)}
+.navlinks a:hover{color:var(--ink)}
+
+.btn{display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 18px;border-radius:10px;font-weight:500;font-size:15px;transition:transform .15s,background .2s,box-shadow .2s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn.dark{background:#1b1a18;color:#fff;box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 8px 22px -10px rgba(27,26,24,.55)}
+.btn.dark:hover{background:#000}
+.btn.light{background:#fff;border:1px solid var(--line)}
+.btn.light:hover{background:var(--card)}
+.btn.sm{height:36px;padding:0 14px;font-size:14px;border-radius:9px}
+.btn svg{width:16px;height:16px}
+
+header.hero{padding:74px 0 0;text-align:center}
+.appicon{width:92px;height:92px;border-radius:21px;box-shadow:0 22px 44px -18px rgba(11,20,48,.6);animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+h1{font-family:var(--serif);font-weight:300;font-size:clamp(40px,6.4vw,68px);line-height:1.04;letter-spacing:-.035em;margin:26px auto 0}
+h1 .w{display:inline-block;animation:blurin .9s cubic-bezier(.2,.7,.2,1) both}
+h1 em{font-style:normal}
+h1 em .w{background:linear-gradient(90deg,var(--amber),var(--orange) 40%,var(--red));-webkit-background-clip:text;background-clip:text;color:transparent;padding:0 .04em .08em 0}
+h1 em .w:last-child{background:var(--red);-webkit-background-clip:text;background-clip:text}
+.sub{max-width:520px;margin:20px auto 0;color:var(--muted);font-size:17px;animation:rise .9s .35s both}
+.cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:28px;animation:rise .9s .45s both}
+.meta{margin-top:14px;font-size:13px;color:var(--muted);animation:rise .9s .55s both}
+.meta b{font-weight:500;color:var(--ink)}
+@keyframes blurin{from{opacity:0;filter:blur(14px);transform:translateY(10px)}to{opacity:1;filter:blur(0);transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.stage{position:relative;margin:56px auto 0;border-radius:26px;padding:34px;overflow:hidden;background:linear-gradient(180deg,var(--navy2),var(--navy) 60%,#050a1c);box-shadow:0 40px 80px -40px rgba(11,20,48,.7);animation:rise 1s .6s both}
+.sun{position:absolute;left:50%;bottom:-78%;width:120%;aspect-ratio:1;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(255,122,46,.75),rgba(255,68,51,.35) 45%,transparent 70%);opacity:var(--glow,.2);transition:opacity .4s;pointer-events:none}
+.grid{position:relative;display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:stretch}
+.screen{position:relative;border-radius:14px;overflow:hidden;background:#fff;min-height:330px;isolation:isolate;box-shadow:0 20px 50px -20px rgba(0,0,0,.6)}
+.screen .bar{display:flex;gap:6px;padding:11px 12px;background:#f1f0ee;border-bottom:1px solid #e3e1dc}
+.screen .bar i{width:10px;height:10px;border-radius:50%;background:#ff5f57}
+.screen .bar i:nth-child(2){background:#febc2e}.screen .bar i:nth-child(3){background:#28c840}
+.doc{padding:22px 24px;text-align:left}
+.doc h4{font-family:var(--serif);font-weight:400;font-size:22px;letter-spacing:-.02em;color:#1b1a18}
+.doc p{height:9px;border-radius:5px;background:#e4e2dd;margin-top:11px}
+.doc p:nth-of-type(2){width:86%}.doc p:nth-of-type(3){width:64%}
+.photo{height:112px;border-radius:10px;margin-top:18px;background:linear-gradient(120deg,#3a7bff,#38d6c4 38%,#8fe36b 62%,#ffd84a)}
+.chips{display:flex;gap:8px;margin-top:14px}
+.chips b{height:24px;border-radius:12px;flex:0 0 70px;background:#2f6bff}.chips b:nth-child(2){background:#19b56f}.chips b:nth-child(3){background:#ff5a45}
+.tint{position:absolute;inset:0;mix-blend-mode:multiply;background:rgb(255,255,255);pointer-events:none;z-index:2}
+.panel{border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:18px;color:#fff;text-align:left;display:flex;flex-direction:column;backdrop-filter:blur(6px)}
+.read{display:flex;align-items:baseline;gap:10px}
+.read strong{font-family:var(--serif);font-weight:300;font-size:46px;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.read span{font-size:13px;color:rgba(255,255,255,.62)}
+canvas{width:100%;height:150px;display:block;margin-top:10px}
+.axis{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+.slide{margin-top:auto;padding-top:16px}
+.slide label{display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.75)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;margin:12px 0 8px;background:linear-gradient(90deg,#fff,var(--amber) 50%,var(--red));outline-offset:6px;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.45);border:0}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:0}
+.ends{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.5)}
+.hint{position:relative;text-align:center;margin-top:16px;font-size:13px;color:rgba(255,255,255,.55)}
+
+section.points{padding:110px 0 30px;text-align:center}
+h2{font-family:var(--serif);font-weight:300;font-size:clamp(30px,4.4vw,46px);line-height:1.08;letter-spacing:-.03em;max-width:18ch;margin:0 auto}
+.lead{color:var(--muted);max-width:480px;margin:16px auto 0}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:46px;text-align:left}
+.card{background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:18px;padding:18px 18px 24px;opacity:0;transform:translateY(22px);transition:opacity .8s,transform .8s cubic-bezier(.2,.7,.2,1)}
+.card.in{opacity:1;transform:none}
+.card:nth-child(2){transition-delay:.1s}.card:nth-child(3){transition-delay:.2s}
+.art{height:150px;border-radius:12px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;position:relative}
+.card h3{font-size:16px;font-weight:600;margin-top:18px;letter-spacing:-.01em}
+.card p{color:var(--muted);font-size:14.5px;margin-top:6px}
+.rgb{display:flex;gap:14px;align-items:flex-end;height:84px}
+.rgb i{width:26px;border-radius:7px 7px 3px 3px;animation:drop 4s ease-in-out infinite}
+.rgb i:nth-child(1){background:#2f6bff;height:100%}.rgb i:nth-child(2){background:#19b56f;height:100%;animation-delay:.25s}
+.rgb i:nth-child(3){background:var(--red);height:100%;animation:none}
+@keyframes drop{0%,18%{height:100%;opacity:1}45%,78%{height:5%;opacity:.25}100%{height:100%;opacity:1}}
+.day{width:82%;height:22px;border-radius:8px;position:relative;background:linear-gradient(90deg,#e8372c 0 26%,#dff0ff 27% 33%,#fff 34% 66%,#f39a44 70% 82%,#e8372c 86%);box-shadow:0 0 0 1px var(--line)}
+.day::after{content:"";position:absolute;top:-5px;width:6px;height:32px;border-radius:3px;background:#1b1a18;box-shadow:0 0 0 2px #fff;animation:sweep 9s linear infinite}
+@keyframes sweep{from{left:0}to{left:calc(100% - 6px)}}
+.pill{width:80%;height:8px;border-radius:4px;background:linear-gradient(90deg,#fff,var(--amber) 50%,var(--red));box-shadow:0 0 0 1px var(--line);position:relative}
+.pill::after{content:"";position:absolute;top:-9px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.25),0 0 0 1px var(--line);animation:knob 5s ease-in-out infinite alternate}
+@keyframes knob{from{left:0}to{left:calc(100% - 26px)}}
+
+.subs{list-style:none;padding:0;margin-top:14px;border-top:1px solid rgba(27,26,24,.08)}
+.subs li{font-size:13.5px;color:var(--muted);padding:9px 0 0 20px;position:relative}
+.subs li::before{content:"";position:absolute;left:2px;top:15px;width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--amber),var(--red))}
+.minis{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px;text-align:left}
+.mini{display:flex;gap:14px;align-items:flex-start;background:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.6);border-radius:16px;padding:16px;opacity:0;transform:translateY(18px);transition:opacity .8s,transform .8s cubic-bezier(.2,.7,.2,1)}
+.mini.in{opacity:1;transform:none}
+.mini:nth-child(2){transition-delay:.1s}.mini:nth-child(3){transition-delay:.2s}
+.mini svg{flex:0 0 34px;width:34px;height:34px;padding:8px;border-radius:10px;background:var(--navy);color:var(--amber)}
+.mini h3{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.mini p{font-size:13.5px;color:var(--muted);margin-top:3px}
+section.science{padding:110px 0 0;text-align:center}
+.studies{list-style:none;padding:0;max-width:820px;margin:40px auto 0;text-align:left;border-top:1px solid rgba(27,26,24,.12)}
+.studies li{border-bottom:1px solid rgba(27,26,24,.12);opacity:0;transform:translateY(16px);transition:opacity .7s,transform .7s cubic-bezier(.2,.7,.2,1)}
+.studies li.in{opacity:1;transform:none}
+.studies a{display:grid;grid-template-columns:128px 1fr auto;gap:20px;align-items:center;padding:20px 6px;transition:background .2s,padding .2s;border-radius:10px}
+.studies a:hover{background:rgba(255,255,255,.5);padding-left:14px;padding-right:14px}
+.studies b{font-family:var(--serif);font-weight:300;font-size:40px;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.studies p{font-size:15.5px;color:var(--ink)}
+.studies small{display:block;font-size:13px;color:rgba(27,26,24,.62);margin-top:3px}
+.studies svg{width:18px;height:18px;color:rgba(27,26,24,.5)}
+.fine{max-width:560px;margin:18px auto 0;font-size:13px;color:rgba(27,26,24,.62)}
+section.founder{padding:120px 0 40px;text-align:center}
+.sig2{display:block;width:min(340px,70vw);margin:-6px auto -30px;transform:rotate(-4deg);filter:brightness(0);opacity:.86}
+.founder blockquote{font-family:var(--serif);font-weight:300;font-size:clamp(22px,2.9vw,30px);line-height:1.34;letter-spacing:-.02em;max-width:25em;margin:0 auto;opacity:0;transform:translateY(20px);transition:opacity 1s,transform 1s}
+.founder blockquote.in{opacity:1;transform:none}
+.founder blockquote p+p{margin-top:.8em}
+.founder cite{display:block;margin-top:26px;font-style:normal;font-size:14px;color:rgba(27,26,24,.72)}
+.founder cite b{font-weight:600;color:var(--ink)}
+section.get{padding:90px 0 110px;text-align:center}
+.box{border-radius:26px;padding:64px 24px;background:linear-gradient(180deg,var(--navy2),var(--navy));color:#fff;position:relative;overflow:hidden}
+.box::before{content:"";position:absolute;left:50%;bottom:-118%;width:100%;aspect-ratio:1;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(255,122,46,.6),rgba(255,68,51,.25) 50%,transparent 72%)}
+.box>*{position:relative}
+.box h2{color:#fff}
+.box .lead{color:rgba(255,255,255,.7)}
+.btn.white{background:#fff;color:#1b1a18;margin-top:28px}
+.btn.white:hover{background:#f1efe9}
+.steps{display:flex;gap:10px 26px;justify-content:center;flex-wrap:wrap;margin-top:26px;font-size:13.5px;color:rgba(255,255,255,.72)}
+.steps b{color:#fff;font-weight:500}
+
+footer{padding:30px 0 54px;text-align:center;color:rgba(255,255,255,.72);font-size:13.5px}
+.sig{display:block;width:min(420px,78vw);margin:0 auto -14px;transform:rotate(-4deg);filter:drop-shadow(0 2px 10px rgba(0,0,0,.35))}
+footer strong{display:block;color:#fff;font-weight:600;margin-top:0}
+footer .r{display:flex;gap:22px;justify-content:center;margin-top:22px}
+footer a{color:rgba(255,255,255,.8)}
+footer a:hover{color:#fff}
+
+@media (max-width:820px){
+  .grid,.cards,.minis{grid-template-columns:1fr}
+  .studies a{grid-template-columns:92px 1fr;gap:14px}.studies svg{display:none}.studies b{font-size:32px}
+  .stage{padding:16px;border-radius:20px}
+  .screen{min-height:0}
+  .navlinks a.hide{display:none}
+  .brand span{display:none}
+  header.hero{padding-top:48px}
+  section.points{padding-top:76px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.card,.mini,.studies li,.founder blockquote{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+<svg class="wave" id="wave" aria-hidden="true"><path id="wbase" fill="none" stroke-width="1" stroke-dasharray="2 7"/><path id="wticks" fill="none" stroke-width="1"/><path id="wline" fill="none" stroke-width="1.4"/><circle id="wdot" r="4.5"/></svg>
+
+<nav id="nav"><div class="wrap">
+  <a class="brand" href="#top"><img src="icon.png" alt="">NH Red Light Block <span>by NH Private Health Office</span></a>
+  <div class="navlinks">
+    <a class="hide" href="#how">How it works</a>
+    <a class="hide" href="#science">Science</a>
+    <a class="hide" href="https://github.com/nhaasmann/nh-red-light-block">GitHub</a>
+    <a class="btn dark sm" data-dl href="https://github.com/nhaasmann/nh-red-light-block/releases/latest/download/NH-Red-Light-Block.dmg">Download</a>
+  </div>
+</div></nav>
+
+<header class="hero" id="top"><div class="wrap">
+  <img class="appicon" src="icon.png" alt="NH Red Light Block app icon" width="92" height="92">
+  <h1 id="h1">Your screen,<br>without <em>the blue.</em></h1>
+  <p class="sub">A tiny Mac app that takes blue and green light out of your display at night, so your laptop stops telling your brain it is noon at 11 pm.</p>
+  <div class="cta">
+    <a class="btn dark" data-dl href="https://github.com/nhaasmann/nh-red-light-block/releases/latest/download/NH-Red-Light-Block.dmg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0l-4.500-4.500M12 15l4.500-4.500M5 19h14"/></svg>
+      Download for Mac
+    </a>
+    <a class="btn light" href="https://github.com/nhaasmann/nh-red-light-block">View on GitHub</a>
+  </div>
+  <p class="meta"><b>Free</b> · macOS 14 or newer · Nothing leaves your Mac</p>
+
+  <div class="stage" id="stage">
+    <div class="sun"></div>
+    <div class="grid">
+      <div class="screen" aria-hidden="true">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <div class="doc">
+          <h4>Tonight's reading</h4><p></p><p></p><p></p>
+          <div class="photo"></div>
+          <div class="chips"><b></b><b></b><b></b></div>
+        </div>
+        <div class="tint" id="tint"></div>
+      </div>
+      <div class="panel">
+        <div class="read"><strong id="pct">100%</strong><span>body-clock light<br>from this screen</span></div>
+        <canvas id="spec" aria-label="Light spectrum of the screen. The blue and green peaks shrink as the filter increases."></canvas>
+        <div class="axis"><span>400 nm</span><span>blue</span><span>green</span><span>red</span><span>700</span></div>
+        <div class="slide">
+          <label for="lvl"><span>Filter strength</span><span id="lvlv">0%</span></label>
+          <input id="lvl" type="range" min="0" max="100" value="0" aria-label="Filter strength">
+          <div class="ends"><span>Unfiltered</span><span>Amber</span><span>Red only</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="hint">Drag the slider. This is what the app does to your whole screen.</p>
+  </div>
+</div></header>
+
+<section class="points" id="how"><div class="wrap">
+  <h2>Three things it does, and nothing else.</h2>
+  <p class="lead">Built for our own evenings at the NH Private Health Office. Now it is yours.</p>
+  <div class="cards">
+    <article class="card">
+      <div class="art"><div class="rgb"><i></i><i></i><i></i></div></div>
+      <h3>Red only at night</h3>
+      <p>Warm filters leave the green in. This switches blue and green off completely, leaving the one colour your body clock barely notices.</p>
+      <ul class="subs"><li>Blue and green at exactly zero</li><li>Dim the red as low as 30%</li><li>Works on every connected display</li></ul>
+    </article>
+    <article class="card">
+      <div class="art"><div class="day"></div></div>
+      <h3>Follows your sun</h3>
+      <p>Amber at your sunset, red two hours before bed, a full bright screen again when you wake. Set it once and forget it.</p>
+      <ul class="subs"><li>Sunset worked out from your location</li><li>Your own wake time and bedtime</li><li>Your whole day shown as one bar</li></ul>
+    </article>
+    <article class="card">
+      <div class="art"><div class="pill"></div></div>
+      <h3>One slider</h3>
+      <p>Stop anywhere between unfiltered and red only. One shortcut brings true colours back the moment you need them.</p>
+      <ul class="subs"><li>Changes glide instead of jumping</li><li>Pause for an hour in one click</li><li>Control + Option + Command + R</li></ul>
+    </article>
+  </div>
+  <div class="minis">
+    <article class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19h18M4 19c3 0 3-5 5-5s2 5 4 5 3-13 5-13 2 13 3 13"/></svg><div><h3>Live spectrum chart</h3><p>See an estimate of the light your screen is sending out, and watch the blue peak disappear.</p></div></article>
+    <article class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><div><h3>Private by design</h3><p>No account, no tracking, no network calls. Your location never leaves your Mac.</p></div></article>
+    <article class="mini"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v9"/><path d="M6.3 6.8a8 8 0 1 0 11.400 0"/></svg><div><h3>Starts with your Mac</h3><p>Open at login, sit quietly in the menu bar, and restore normal colour the moment you quit.</p></div></article>
+  </div>
+</div></section>
+
+<section class="science" id="science"><div class="wrap">
+  <h2>Why your body clock is worth protecting.</h2>
+  <p class="lead">Five published studies. Tap any one to read it.</p>
+  <ul class="studies">
+    <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4531403/" target="_blank" rel="noopener"><b>4.2&times;</b><span><p>People sleeping under 6 hours were 4.2 times more likely to catch a cold than those sleeping over 7.</p><small>Immune system · Prather et al., Sleep, 2015 · 164 adults</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></li>
+    <li><a href="https://pubmed.ncbi.nlm.nih.gov/33400856/" target="_blank" rel="noopener"><b>&minus;18%</b><span><p>One night without sleep cut muscle building by 18% and testosterone by 24%.</p><small>Strength · Lamon et al., Physiological Reports, 2021 · 13 adults</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></li>
+    <li><a href="https://pubmed.ncbi.nlm.nih.gov/20921542/" target="_blank" rel="noopener"><b>&minus;55%</b><span><p>On the same diet, 5.5 instead of 8.5 hours in bed meant 55% less fat lost and 60% more muscle lost.</p><small>Fat loss · Nedeltcheva et al., Annals of Internal Medicine, 2010 · 10 adults</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></li>
+    <li><a href="https://pubmed.ncbi.nlm.nih.gov/25535358/" target="_blank" rel="noopener"><b>&minus;55%</b><span><p>Reading on a lit screen before bed lowered melatonin by 55% and shifted the body clock by more than an hour.</p><small>Energy · Chang et al., PNAS, 2015 · 12 adults</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></li>
+    <li><a href="https://www.nature.com/articles/s44220-023-00135-8" target="_blank" rel="noopener"><b>+30%</b><span><p>The brightest nights went with a 30% higher risk of depression, the brightest days with a 20% lower one.</p><small>Mood · Burns et al., Nature Mental Health, 2023 · 86,772 adults</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></li>
+  </ul>
+  <p class="fine">These studies are about sleep and light in general, not about this app. Several are small lab studies, and the last one shows a link, not proof of cause.</p>
+</div></section>
+
+<section class="founder" id="founder"><div class="wrap">
+  <blockquote>
+    <p>I built this for my own evenings. The last light most of us see at night is a screen, and filters that only warm the colour never went far enough for me.</p>
+    <p>So I made one that takes the blue and green out completely. It has been on my Mac every night since. Now it is yours.</p>
+    <cite><b>Nick Haasmann</b> · Founder, NH Private Health Office</cite>
+    <img class="sig2" src="signature.png" alt="Signature of Nick Haasmann" loading="lazy">
+  </blockquote>
+</div></section>
+
+<section class="get" id="get"><div class="wrap">
+  <div class="box">
+    <h2>Sleep like the sun went down.</h2>
+    <p class="lead">One download, one drag to Applications. It lives quietly in your menu bar.</p>
+    <a class="btn white" data-dl href="https://github.com/nhaasmann/nh-red-light-block/releases/latest/download/NH-Red-Light-Block.dmg">Download for Mac</a>
+    <div class="steps"><span><b>1</b> Open the download</span><span><b>2</b> Drag to Applications</span><span><b>3</b> First launch: System Settings, Privacy &amp; Security, Open Anyway</span></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <img class="sig" src="signature.png" alt="Signature of Nick Haasmann">
+  <strong>NH Private Health Office</strong>
+  A wellness tool, not medical advice.<br>&copy; 2026 NH Private Health Office. All rights reserved.
+  <div class="r"><a href="https://github.com/nhaasmann/nh-red-light-block">Source on GitHub</a><a href="#top">Back to top</a></div>
+</div></footer>
+
+<script>
+// Headline: split into words for the blur-in.
+(function(){const h=document.getElementById('h1');let i=0;
+  (function walk(n){[...n.childNodes].forEach(c=>{if(c.nodeType===3){const f=document.createDocumentFragment();
+    c.textContent.split(/(\s+)/).forEach(t=>{if(!t.trim()){f.append(t);return}const s=document.createElement('span');s.className='w';s.textContent=t;s.style.animationDelay=(i++*0.09)+'s';f.append(s)});c.replaceWith(f)}else walk(c)})})(h)})();
+addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>8),{passive:true});
+const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('in')),{threshold:.2});
+document.querySelectorAll('.card,.mini,.studies li,.founder blockquote').forEach(c=>io.observe(c));
+
+// Circadian line: one slow wave behind the page. Scrolling moves the day along it.
+(function(){const sv=document.getElementById('wave'),L=document.getElementById('wline'),B=document.getElementById('wbase'),T=document.getElementById('wticks'),D=document.getElementById('wdot');
+  const mix=(a,b,t)=>a.map((v,i)=>Math.round(v+(b[i]-v)*t));
+  function paint(){const W=innerWidth,H=innerHeight,max=Math.max(1,document.documentElement.scrollHeight-H),p=Math.min(1,Math.max(0,scrollY/max));
+    const mid=H*.56,A=H*.15,ph=p*Math.PI*3,f=x=>mid-A*Math.sin(x/W*Math.PI*3+ph-Math.PI/2);
+    let d='';for(let x=0;x<=W;x+=8)d+=(x?'L':'M')+x+','+f(x).toFixed(1);L.setAttribute('d',d);
+    B.setAttribute('d',`M0,${mid}L${W},${mid}`);
+    let t='';for(let k=0;k<=24;k++){const x=W*k/24;t+=`M${x.toFixed(1)},${mid-(k%6?3:7)}V${mid+(k%6?3:7)}`}T.setAttribute('d',t);
+    const dx=W*(.12+.76*p);D.setAttribute('cx',dx);D.setAttribute('cy',f(dx));
+    const c=p<.8?mix([70,120,200],[255,68,51],p/.8):mix([255,68,51],[255,225,214],(p-.8)/.2),col=`rgb(${c})`;
+    L.setAttribute('stroke',col);B.setAttribute('stroke',col);T.setAttribute('stroke',col);D.setAttribute('fill',col);
+    sv.style.opacity=.34}
+  addEventListener('scroll',paint,{passive:true});addEventListener('resize',paint);paint()})();
+
+// The same filter curve the app uses: 0 unfiltered, 0.5 amber, 1 red only.
+const lerp=(a,b,t)=>a+(b-a)*t, N=[1,1,1], A=[1,.55,.15], R=[1,0,0];
+const gains=t=>t<=.5?N.map((v,i)=>lerp(v,A[i],t*2)):A.map((v,i)=>lerp(v,R[i],(t-.5)*2));
+const g=(x,m,s)=>Math.exp(-.5*((x-m)/s)**2);
+const prim=[l=>.85*(.35*g(l,613,4)+g(l,631,4)+.55*g(l,638,4)+.3*g(l,650,4)), l=>.5*g(l,532,21), l=>g(l,449,9)];
+const mel=l=>g(l,490,l<490?36.5:35);
+const cv=document.getElementById('spec'),cx=cv.getContext('2d'),tint=document.getElementById('tint'),stage=document.getElementById('stage');
+const pct=document.getElementById('pct'),lvl=document.getElementById('lvl'),lvlv=document.getElementById('lvlv');
+let W=0,H=0,grad;
+function size(){const d=devicePixelRatio||1,r=cv.getBoundingClientRect();W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);
+  grad=cx.createLinearGradient(0,0,W,0);[[0,'#5b3cff'],[.16,'#2f6bff'],[.3,'#19c4d6'],[.42,'#35d07f'],[.55,'#d7e04a'],[.66,'#ffb23e'],[.76,'#ff5a35'],[1,'#b3122a']].forEach(s=>grad.addColorStop(s[0],s[1]))}
+const X=l=>(l-400)/300*W;
+function path(lin){cx.beginPath();cx.moveTo(0,H);for(let l=400;l<=700;l+=2){const v=prim[0](l)*lin[0]+prim[1](l)*lin[1]+prim[2](l)*lin[2];cx.lineTo(X(l),H-4-v*(H-14))}cx.lineTo(W,H)}
+function draw(t){const gn=gains(t),lin=gn.map(v=>v**2.2);
+  cx.clearRect(0,0,W,H);
+  path([1,1,1]);cx.setLineDash([3,4]);cx.strokeStyle='rgba(255,255,255,.28)';cx.lineWidth=1;cx.stroke();cx.setLineDash([]);
+  path(lin);cx.fillStyle=grad;cx.globalAlpha=.9;cx.fill();cx.globalAlpha=1;
+  let a=0,b=0;for(let l=400;l<=700;l+=2){const m=mel(l);a+=m*(prim[0](l)*lin[0]+prim[1](l)*lin[1]+prim[2](l)*lin[2]);b+=m*(prim[0](l)+prim[1](l)+prim[2](l))}
+  const p=a/b*100;pct.textContent=(p<.5?'0':p<10?p.toFixed(1):Math.round(p))+'%';
+  tint.style.background=`rgb(${gn.map(v=>Math.round(v*255)).join(',')})`;
+  stage.style.setProperty('--glow',(.18+.82*t).toFixed(2));
+  lvlv.textContent=Math.round(t*100)+'%'}
+let cur=0,target=0,auto=!matchMedia('(prefers-reduced-motion:reduce)').matches,t0=performance.now();
+function frame(now){if(auto){const k=((now-t0)/9000)%1;target=k<.5?k*2:2-k*2;target=target*target*(3-2*target);lvl.value=Math.round(target*100)}
+  cur+=(target-cur)*.12;draw(cur);requestAnimationFrame(frame)}
+const stop=()=>{auto=false};
+lvl.addEventListener('input',()=>{stop();target=lvl.value/100});
+['pointerdown','keydown','touchstart'].forEach(e=>lvl.addEventListener(e,stop,{passive:true}));
+addEventListener('resize',size);size();requestAnimationFrame(frame);
+</script>
+</body>
+</html>
